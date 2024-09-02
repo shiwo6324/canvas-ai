@@ -5,7 +5,6 @@ import { fabric } from 'fabric';
 
 const Editor = () => {
   const { init } = useEditor();
-
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
