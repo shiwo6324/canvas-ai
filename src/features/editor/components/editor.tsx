@@ -25,17 +25,24 @@ const Editor = () => {
   return (
     <div className="h-full flex flex-col">
       <Navbar />
-      <div className='absolute h-[calc(100%-68px)] 
-      w-full top-[68px] flex'>
+      <div
+        className="absolute h-[calc(100%-68px)] 
+      w-full top-[68px] flex"
+      >
         <Sidebar />
-      <main className='bg-muted flex-1 overflow-auto
-       relative flex flex-col'>
-        <Toolbar />
-      <div className="flex-1 h-[calc(100%-124px)] bg-muted" ref={containerRef}>
-        <canvas ref={canvasRef} />
-      </div>
-      <Footer />
-      </main>
+        <main
+          className="bg-muted flex-1 overflow-auto
+       relative flex flex-col"
+        >
+          <Toolbar />
+          <div
+            className="flex-1 h-[calc(100%-124px)] bg-muted"
+            ref={containerRef}
+          >
+            <canvas ref={canvasRef} />
+          </div>
+          <Footer />
+        </main>
       </div>
     </div>
   );
