@@ -54,8 +54,9 @@ export const useAutoResize = ({ canvas, container }: UserAutoResizeProps) => {
       canvas.width === undefined ||
       canvas.height === undefined ||
       !viewportTransform
-    )
+    ) {
       return;
+    }
 
     // 调整视图变换以居中工作区
     viewportTransform[4] =

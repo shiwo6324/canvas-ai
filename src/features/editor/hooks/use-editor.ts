@@ -56,9 +56,18 @@ export const useEditor = () => {
       initialCanvas.centerObject(initialWorkspace);
       initialCanvas.clipPath = initialWorkspace;
 
-      // 更新状态
       setCanvas(initialCanvas);
       setContainer(initialContainer);
+
+      const test = new fabric.Rect({
+        width: 100,
+        height: 100,
+        fill: 'black',
+      });
+
+      initialCanvas.add(test);
+      initialCanvas.centerObject(test);
+      // 更新状态
     },
     []
   );
