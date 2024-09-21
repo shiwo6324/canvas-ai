@@ -22,8 +22,15 @@ import {
 import { Separator } from '@/components/ui/separator';
 import Hint from '@/components/hint';
 import { BsCloudCheck } from 'react-icons/bs';
+import { ActiveTool } from '../types';
+import { cn } from '@/lib/utils';
 
-const Navbar = () => {
+interface NavbarProps {
+  activeTool: ActiveTool;
+  onChangeActiveTool: (tool: ActiveTool) => void;
+}
+
+const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
   return (
     <div
       className="w-full flex items-center p-4 h-[68px] gap-x-8
@@ -52,7 +59,12 @@ const Navbar = () => {
         <Separator orientation="vertical" className="mx-2" />
 
         <Hint label="选择" side="bottom" sideOffset={10}>
-          <Button size="icon" variant="ghost" className="">
+          <Button
+            size="icon"
+            variant="ghost"
+            className={cn(activeTool === 'select' && 'bg-gray-100')}
+            onClick={() => onChangeActiveTool('select')}
+          >
             <MousePointerClick className="size-4  " />
           </Button>
         </Hint>

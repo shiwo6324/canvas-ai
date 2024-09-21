@@ -6,11 +6,29 @@ import Navbar from './navbar';
 import Sidebar from './sidebar';
 import Toolbar from './toolbar';
 import Footer from './footer';
+import { ActiveTool } from '../types';
 
 const Editor = () => {
   const { init } = useEditor();
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [activeTool, setActiveTool] = React.useState<ActiveTool>('select');
+
+  const onChangeActiveTool = React.useCallback(
+    (tool: ActiveTool) => {
+      if (tool === activeTool) {
+        setActiveTool('select');
+        return;
+      }
+
+      if (tool === 'draw') {
+      }
+      if (activeTool === 'draw') {
+      }
+      setActiveTool(tool);
+    },
+    [activeTool]
+  );
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
@@ -27,12 +45,15 @@ const Editor = () => {
   }, [init]);
   return (
     <div className="h-full flex flex-col">
-      <Navbar />
+      <Navbar activeTool={activeTool} onChangeActiveTool={onChangeActiveTool} />
       <div
         className="absolute h-[calc(100%-68px)] 
       w-full top-[68px] flex"
       >
-        <Sidebar />
+        <Sidebar
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
         <main
           className="bg-muted flex-1 overflow-auto
        relative flex flex-col"
