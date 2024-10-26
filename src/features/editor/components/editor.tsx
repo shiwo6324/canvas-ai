@@ -10,7 +10,7 @@ import { ActiveTool } from '../types';
 import ShapeSidebar from './shape-sidebar';
 
 const Editor = () => {
-  const { init } = useEditor();
+  const { init, editor } = useEditor();
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = React.useState<ActiveTool>('select');
@@ -56,6 +56,7 @@ const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <ShapeSidebar
+          editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
