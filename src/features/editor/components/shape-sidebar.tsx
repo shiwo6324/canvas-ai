@@ -20,6 +20,9 @@ const ShapeSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: ShapeSidebarProps) => {
+  const onClose = () => {
+    onChangeActiveTool('select');
+  };
   return (
     <aside
       className={cn(
@@ -69,7 +72,7 @@ const ShapeSidebar = ({
           />
         </div>
       </ScrollArea>
-      <ToolSidebarClose onClick={() => onChangeActiveTool('select')} />
+      <ToolSidebarClose onClick={onClose} />
     </aside>
   );
 };
