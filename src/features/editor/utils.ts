@@ -7,6 +7,6 @@ export function isTextType(type: string | undefined) {
 export function rgbaObjectToString(rgba: RGBColor | 'transparent'): string {
   if (rgba === 'transparent') return `rgba(0,0,0,0)`;
   const { r, g, b, a } = rgba;
-  const alpha = a !== undefined ? 1 : a;
+  const alpha = a !== undefined ? a : 1;
   return `rgba(${r},${g},${b},${alpha})`;
 }

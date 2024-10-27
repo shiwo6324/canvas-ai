@@ -1,5 +1,14 @@
 import * as material from 'material-colors';
 
+export const selectionDependentTools = [
+  'fill',
+  'stroke-color',
+  'stroke-width',
+  'font',
+  'filter',
+  'opacity',
+];
+
 export const colors = [
   material.red['500'],
   material.pink['500'],
@@ -61,16 +70,20 @@ export interface Editor {
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
-  fillColor: string;
-  strokeColor: string;
   strokeWidth: number;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
+  getActiveObjectFillColor: () => string;
+  getActiveObjectStrokeColor: () => string;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
 export const STROKE_COLOR = 'rgba(0, 0, 0, 1)';
 export const STROKE_WIDTH = 1;
+
+export interface EditorHookProps {
+  clearSelectionCallback?: () => void;
+}
 
 export const CRICLE_OPTIONS = {
   radius: 150,

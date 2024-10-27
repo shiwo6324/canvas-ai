@@ -18,7 +18,8 @@ const Toolbar = ({
   key,
 }: ToolbarProps) => {
   // const selectedObject = editor?.canvas.getActiveObject();
-  const fillColor = editor?.fillColor;
+  const fillColor = editor?.getActiveObjectFillColor();
+  const strokeColor = editor?.getActiveObjectStrokeColor();
 
   if (editor?.selectedObjects.length === 0) {
     return (
@@ -61,6 +62,23 @@ const Toolbar = ({
             ></div>
           </Button>
         </Hint>
+        <div className="flex items-center h-full justify-center">
+          <Hint label="边框颜色 " side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool('stroke-color')}
+              size="icon"
+              variant="ghost"
+              className={cn(activeTool === 'stroke-color' && 'bg-gray-100')}
+            >
+              <div
+                className="rounded-sm size-4 border-2 bg-white"
+                style={{
+                  borderColor: strokeColor,
+                }}
+              ></div>
+            </Button>
+          </Hint>
+        </div>
       </div>
     </div>
   );

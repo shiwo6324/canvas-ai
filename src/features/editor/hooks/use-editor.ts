@@ -11,6 +11,7 @@ import {
   STROKE_COLOR,
   STROKE_WIDTH,
   TRIANGLE_OPTIONS,
+  EditorHookProps,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
@@ -173,15 +174,34 @@ const buildEditor = ({
       );
       addToCanvas(object);
     },
-    fillColor,
-    strokeColor,
+    // 获取当前选中对象的填充颜色
+    getActiveObjectFillColor: () => {
+      // 获取第一个选中的对象
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // 如果有选中对象，获取其填充颜色
+        // 如果对象没有填充颜色，则使用默认的fillColor
+        const value = selectedObject.get('fill') || fillColor;
+        return value as string;
+      }
+
+      // 如果没有选中对象，返回默认的fillColor
+      return fillColor;
+    },
+    getActiveObjectStrokeColor: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        return selectedObject.get('stroke') || strokeColor;
+      }
+      return strokeColor;
+    },
     strokeWidth,
     canvas,
     selectedObjects,
   };
 };
 
-export const useEditor = () => {
+export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   // 创建 canvas 和 container 状态
   const [canvas, setCanvas] = React.useState<fabric.Canvas | null>(null);
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -204,6 +224,7 @@ export const useEditor = () => {
   useCanvasEvents({
     canvas,
     setSelectedObjects,
+    clearSelectionCallback,
   });
 
   // 编辑器对象

@@ -4,11 +4,13 @@ import { useEffect } from 'react';
 interface UseCanvasEventsProps {
   canvas: fabric.Canvas | null;
   setSelectedObjects: (objects: fabric.Object[]) => void;
+  clearSelectionCallback?: () => void;
 }
 
 export const useCanvasEvents = ({
   canvas,
   setSelectedObjects,
+  clearSelectionCallback,
 }: UseCanvasEventsProps) => {
   useEffect(() => {
     if (canvas) {
@@ -23,9 +25,10 @@ export const useCanvasEvents = ({
       // 监听画布上的选择清除事件
       canvas.on('selection:cleared', () => {
         setSelectedObjects([]);
+        clearSelectionCallback?.();
       });
     }
-  }, [canvas]);
+  }, [canvas, clearSelectionCallback]);
 
   // 返回一个清理函数，用于在组件卸载时移除事件监听器
   return () => {
