@@ -10,7 +10,7 @@ import { ActiveTool, selectionDependentTools } from '../types';
 import ShapeSidebar from './shape-sidebar';
 import FillColorSidebar from './fill-color-sidebar';
 import StrokeColorSidebar from './stroke-color-sidebar';
-
+import StrokeWidthSidebar from './stroke-width-sidebar';
 const Editor = () => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -43,14 +43,21 @@ const Editor = () => {
   });
 
   useEffect(() => {
+    // 创建一个新的 fabric.js Canvas 实例
     const canvas = new fabric.Canvas(canvasRef.current, {
+      // 控制元素显示在覆盖层之上
       controlsAboveOverlay: true,
+      // 保持对象堆叠顺序
       preserveObjectStacking: true,
     });
+
+    // 初始化编辑器,传入画布和容器引用
     init({
       initialCanvas: canvas,
       initialContainer: containerRef.current!,
     });
+
+    // 清理函数,组件卸载时销毁画布
     return () => {
       canvas.dispose();
     };
@@ -77,6 +84,11 @@ const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <StrokeColorSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <StrokeWidthSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

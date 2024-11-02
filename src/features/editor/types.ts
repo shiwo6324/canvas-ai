@@ -54,13 +54,17 @@ export type BuildEditorProps = {
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;
+  strokeDashArray: number[];
   setFillColor: (value: string) => void;
   setStrokeColor: (value: string) => void;
   setStrokeWidth: (value: number) => void;
+  setStrokeDashArray: (value: number[]) => void;
   selectedObjects: fabric.Object[];
 };
 
 export interface Editor {
+  bringForward: () => void;
+  sendBackwards: () => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
   addRectangle: () => void;
@@ -70,11 +74,13 @@ export interface Editor {
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
-  strokeWidth: number;
+  changeStrokeDashArray: (value: number[]) => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   getActiveObjectFillColor: () => string;
   getActiveObjectStrokeColor: () => string;
+  getActiveObjectStrokeWidth: () => number;
+  getActiveObjectStrokeDashArray: () => number[];
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
@@ -126,3 +132,5 @@ export const DIAMOND_OPTIONS = {
   height: 400,
   angle: 0,
 };
+
+export const STROKE_DASH_ARRAY = [];

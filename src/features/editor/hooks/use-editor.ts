@@ -12,6 +12,7 @@ import {
   STROKE_WIDTH,
   TRIANGLE_OPTIONS,
   EditorHookProps,
+  STROKE_DASH_ARRAY,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
@@ -22,9 +23,11 @@ const buildEditor = ({
   fillColor,
   strokeColor,
   strokeWidth,
+  strokeDashArray,
   setFillColor,
   setStrokeColor,
   setStrokeWidth,
+  setStrokeDashArray,
   selectedObjects,
 }: BuildEditorProps): Editor => {
   const getWorkspace = () => {
@@ -44,6 +47,24 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    bringForward: () => {
+      canvas.getActiveObjects().forEach((object) => {
+        canvas.bringForward(object);
+      });
+      canvas.renderAll();
+
+      const workspace = getWorkspace();
+      workspace?.sendToBack();
+    },
+    sendBackwards: () => {
+      canvas.getActiveObjects().forEach((object) => {
+        canvas.sendBackwards(object);
+      });
+      canvas.renderAll();
+
+      const workspace = getWorkspace();
+      workspace?.sendToBack();
+    },
     changeFillColor: (value: string) => {
       setFillColor(value);
       // 获取画布上所有当前被选中的对象
@@ -57,6 +78,13 @@ const buildEditor = ({
       setStrokeWidth(value);
       canvas.getActiveObjects().forEach((object) => {
         object.set({ strokeWidth: value });
+      });
+      canvas.renderAll();
+    },
+    changeStrokeDashArray: (value: number[]) => {
+      setStrokeDashArray(value);
+      canvas.getActiveObjects().forEach((object) => {
+        object.set({ strokeDashArray: value });
       });
       canvas.renderAll();
     },
@@ -81,6 +109,7 @@ const buildEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(object);
     },
@@ -93,6 +122,7 @@ const buildEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(object);
     },
@@ -102,6 +132,7 @@ const buildEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(object);
     },
@@ -111,6 +142,7 @@ const buildEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(object);
     },
@@ -138,6 +170,7 @@ const buildEditor = ({
           fill: fillColor,
           stroke: strokeColor,
           strokeWidth: strokeWidth,
+          strokeDashArray: strokeDashArray,
         }
       );
       addToCanvas(object);
@@ -170,6 +203,7 @@ const buildEditor = ({
           fill: fillColor,
           stroke: strokeColor,
           strokeWidth: strokeWidth,
+          strokeDashArray: strokeDashArray,
         }
       );
       addToCanvas(object);
@@ -195,7 +229,20 @@ const buildEditor = ({
       }
       return strokeColor;
     },
-    strokeWidth,
+    getActiveObjectStrokeWidth: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        return selectedObject.get('strokeWidth') || strokeWidth;
+      }
+      return strokeWidth;
+    },
+    getActiveObjectStrokeDashArray: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        return selectedObject.get('strokeDashArray') || strokeDashArray;
+      }
+      return strokeDashArray;
+    },
     canvas,
     selectedObjects,
   };
@@ -212,6 +259,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [fillColor, setFillColor] = React.useState(FILL_COLOR);
   const [strokeColor, setStrokeColor] = React.useState(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = React.useState(STROKE_WIDTH);
+  const [strokeDashArray, setStrokeDashArray] =
+    React.useState<number[]>(STROKE_DASH_ARRAY);
 
   // 使用 useAutoResize hook 来自动调整画布大小
   // 这个 hook 会监听 container 的大小变化，并相应地调整 canvas 的尺寸
@@ -243,9 +292,18 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         strokeWidth,
         setStrokeWidth,
         selectedObjects,
+        strokeDashArray,
+        setStrokeDashArray,
       });
     return undefined;
-  }, [canvas, fillColor, strokeColor, strokeWidth, selectedObjects]);
+  }, [
+    canvas,
+    fillColor,
+    strokeColor,
+    strokeWidth,
+    selectedObjects,
+    strokeDashArray,
+  ]);
 
   // 定义初始化函数
   const init = useCallback(
@@ -293,13 +351,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       setCanvas(initialCanvas);
       setContainer(initialContainer);
 
-      const test = new fabric.Rect({
-        width: 100,
-        height: 100,
-        fill: 'black',
-      });
-
-      initialCanvas.add(test);
+      // initialCanvas.add(test);
     },
     []
   );
