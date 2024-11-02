@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { BsBorderWidth } from 'react-icons/bs';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { RxTransparencyGrid } from 'react-icons/rx';
+import { isTextType } from '../utils';
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -26,6 +27,10 @@ const Toolbar = ({
   // 获取当前选中对象的边框颜色
   const strokeColor = editor?.getActiveObjectStrokeColor();
 
+  const selectedObjectType = editor?.selectedObjects[0]?.type;
+
+  const isSelectedObjectText = isTextType(selectedObjectType);
+
   // 如果没有选中任何对象，则返回一个空的工具栏
   if (editor?.selectedObjects.length === 0) {
     return (
@@ -36,17 +41,6 @@ const Toolbar = ({
     );
   }
 
-  // const getProperty = (property: any) => {
-  //   if (!selectedObject) return null;
-  //   return selectedObject.get(property);
-  // };
-
-  // const fillColor = getProperty('fill');
-  // const [properties, setProperties] = useState<any>({
-  //   fillColor,
-  // });
-  // const strokeProperty = getProperty('stroke');
-  // const strokeWidthProperty = getProperty('strokeWidth');
   return (
     <div
       className="shrink-0 h-[56px] border-b bg-white
@@ -68,36 +62,40 @@ const Toolbar = ({
             ></div>
           </Button>
         </Hint>
-        <div className="flex items-center h-full justify-center">
-          <Hint label="边框颜色 " side="bottom" sideOffset={5}>
-            <Button
-              onClick={() => onChangeActiveTool('stroke-color')}
-              size="icon"
-              variant="ghost"
-              className={cn(activeTool === 'stroke-color' && 'bg-gray-100')}
-            >
-              <div
-                className="rounded-sm size-4 border-2 bg-white"
-                style={{
-                  borderColor: strokeColor,
-                }}
-              ></div>
-            </Button>
-          </Hint>
-        </div>
+        {!isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="边框颜色 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => onChangeActiveTool('stroke-color')}
+                size="icon"
+                variant="ghost"
+                className={cn(activeTool === 'stroke-color' && 'bg-gray-100')}
+              >
+                <div
+                  className="rounded-sm size-4 border-2 bg-white"
+                  style={{
+                    borderColor: strokeColor,
+                  }}
+                ></div>
+              </Button>
+            </Hint>
+          </div>
+        )}
 
-        <div className="flex items-center h-full justify-center">
-          <Hint label="边框宽度 " side="bottom" sideOffset={5}>
-            <Button
-              onClick={() => onChangeActiveTool('stroke-width')}
-              size="icon"
-              variant="ghost"
-              className={cn(activeTool === 'stroke-width' && 'bg-gray-100')}
-            >
-              <BsBorderWidth className="size-4" />
-            </Button>
-          </Hint>
-        </div>
+        {!isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="边框宽度 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => onChangeActiveTool('stroke-width')}
+                size="icon"
+                variant="ghost"
+                className={cn(activeTool === 'stroke-width' && 'bg-gray-100')}
+              >
+                <BsBorderWidth className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
 
         <div className="flex items-center h-full justify-center">
           <Hint label="上移 " side="bottom" sideOffset={5}>

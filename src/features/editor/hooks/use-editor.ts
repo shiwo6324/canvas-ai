@@ -13,9 +13,11 @@ import {
   TRIANGLE_OPTIONS,
   EditorHookProps,
   STROKE_DASH_ARRAY,
+  TEXT_OPTIONS,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
+import { ITextOptions } from 'fabric/fabric-impl';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
 const buildEditor = ({
@@ -47,6 +49,14 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    addText: (value, options) => {
+      const object = new fabric.Textbox(value, {
+        ...TEXT_OPTIONS,
+        fill: fillColor,
+        ...options,
+      });
+      addToCanvas(object);
+    },
     getActiveObjectOpacity: () => {
       const selectedObject = selectedObjects[0];
       if (selectedObject) {

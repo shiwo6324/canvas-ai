@@ -1,3 +1,4 @@
+import { ITextOptions } from 'fabric/fabric-impl';
 import * as material from 'material-colors';
 
 export const selectionDependentTools = [
@@ -65,6 +66,7 @@ export type BuildEditorProps = {
 export interface Editor {
   bringForward: () => void;
   sendBackwards: () => void;
+  addText: (value: string, options?: ITextOptions) => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
   addRectangle: () => void;
@@ -88,6 +90,8 @@ export interface Editor {
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
 export const STROKE_COLOR = 'rgba(0, 0, 0, 1)';
 export const STROKE_WIDTH = 1;
+export const FONT_FAMILY = 'Arial';
+export const FONT_SIZE = 40;
 
 export interface EditorHookProps {
   clearSelectionCallback?: () => void;
@@ -133,6 +137,15 @@ export const DIAMOND_OPTIONS = {
   width: 400,
   height: 400,
   angle: 0,
+};
+
+export const TEXT_OPTIONS = {
+  type: 'textbox',
+  fill: FILL_COLOR,
+  left: 100,
+  top: 100,
+  fontSize: FONT_SIZE,
+  fontFamily: FONT_FAMILY,
 };
 
 export const STROKE_DASH_ARRAY = [];
