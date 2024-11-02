@@ -47,6 +47,19 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    getActiveObjectOpacity: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        return selectedObject.get('opacity') || 1;
+      }
+      return 1;
+    },
+    changeOpacity: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        object.set({ opacity: value });
+      });
+      canvas.renderAll();
+    },
     bringForward: () => {
       canvas.getActiveObjects().forEach((object) => {
         canvas.bringForward(object);
@@ -277,10 +290,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   });
 
   // 编辑器对象
-  // 使用 useMemo 创建并缓存编辑器对象
   // 只有当 canvas 发生变化时才重新创建编辑器
-  // 如果 canvas 存在，则调用 buildEditor 函数创建编辑器
-  // 如果 canvas 不存在，则返回 undefined
   const editor = useMemo(() => {
     if (canvas)
       return buildEditor({

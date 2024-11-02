@@ -75,12 +75,14 @@ export interface Editor {
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeStrokeDashArray: (value: number[]) => void;
+  changeOpacity: (value: number) => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   getActiveObjectFillColor: () => string;
   getActiveObjectStrokeColor: () => string;
   getActiveObjectStrokeWidth: () => number;
   getActiveObjectStrokeDashArray: () => number[];
+  getActiveObjectOpacity: () => number;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
