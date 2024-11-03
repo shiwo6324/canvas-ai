@@ -14,6 +14,7 @@ import {
   EditorHookProps,
   STROKE_DASH_ARRAY,
   TEXT_OPTIONS,
+  FONT_FAMILY,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
@@ -30,6 +31,8 @@ const buildEditor = ({
   setStrokeColor,
   setStrokeWidth,
   setStrokeDashArray,
+  fontFamily,
+  setFontFamily,
   selectedObjects,
 }: BuildEditorProps): Editor => {
   const getWorkspace = () => {
@@ -63,6 +66,16 @@ const buildEditor = ({
         return selectedObject.get('opacity') || 1;
       }
       return 1;
+    },
+    changeFontFamily: (value: string) => {
+      setFontFamily(value);
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ fontFamily: value });
+        }
+      });
+      canvas.renderAll();
     },
     changeOpacity: (value: number) => {
       canvas.getActiveObjects().forEach((object) => {
@@ -245,6 +258,17 @@ const buildEditor = ({
       // 如果没有选中对象，返回默认的fillColor
       return fillColor;
     },
+    getActiveObjectFontFamily: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        const value = selectedObject.get('fontFamily') || fontFamily;
+        return value;
+      }
+
+      // 如果没有选中对象，返回默认的fillColor
+      return fontFamily;
+    },
     getActiveObjectStrokeColor: () => {
       const selectedObject = selectedObjects[0];
       if (selectedObject) {
@@ -282,6 +306,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [fillColor, setFillColor] = React.useState(FILL_COLOR);
   const [strokeColor, setStrokeColor] = React.useState(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = React.useState(STROKE_WIDTH);
+  const [fontFamily, setFontFamily] = React.useState(FONT_FAMILY);
   const [strokeDashArray, setStrokeDashArray] =
     React.useState<number[]>(STROKE_DASH_ARRAY);
 
@@ -314,6 +339,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         selectedObjects,
         strokeDashArray,
         setStrokeDashArray,
+        fontFamily,
+        setFontFamily,
       });
     return undefined;
   }, [
@@ -323,6 +350,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeWidth,
     selectedObjects,
     strokeDashArray,
+    fontFamily,
   ]);
 
   // 定义初始化函数

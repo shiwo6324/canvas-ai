@@ -1,6 +1,22 @@
 import { ITextOptions } from 'fabric/fabric-impl';
 import * as material from 'material-colors';
 
+export const fonts = [
+  'Arial',
+  'Arial Black',
+  'Arial Narrow',
+  'Arial Rounded MT Bold',
+  'Arial Unicode MS',
+  'Comic Sans MS',
+  'Impact',
+  'Geneva',
+  'Trebuchet MS',
+  'Verdana',
+  'Lucida Sans',
+  'Lucida Sans Unicode',
+  'Lucida Console',
+];
+
 export const selectionDependentTools = [
   'fill',
   'stroke-color',
@@ -61,6 +77,8 @@ export type BuildEditorProps = {
   setStrokeWidth: (value: number) => void;
   setStrokeDashArray: (value: number[]) => void;
   selectedObjects: fabric.Object[];
+  fontFamily: string;
+  setFontFamily: (value: string) => void;
 };
 
 export interface Editor {
@@ -78,6 +96,7 @@ export interface Editor {
   changeStrokeWidth: (value: number) => void;
   changeStrokeDashArray: (value: number[]) => void;
   changeOpacity: (value: number) => void;
+  changeFontFamily: (value: string) => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   getActiveObjectFillColor: () => string;
@@ -85,6 +104,7 @@ export interface Editor {
   getActiveObjectStrokeWidth: () => number;
   getActiveObjectStrokeDashArray: () => number[];
   getActiveObjectOpacity: () => number;
+  getActiveObjectFontFamily: () => string;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
