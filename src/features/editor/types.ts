@@ -97,6 +97,11 @@ export interface Editor {
   changeStrokeDashArray: (value: number[]) => void;
   changeOpacity: (value: number) => void;
   changeFontFamily: (value: string) => void;
+  changeFontWeight: (value: number) => void;
+  changeFontStyle: (value: string) => void;
+  changeFontLineThrough: (value: boolean) => void;
+  changeFontUnderline: (value: boolean) => void;
+  changeTextAlign: (value: string) => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   getActiveObjectFillColor: () => string;
@@ -105,6 +110,11 @@ export interface Editor {
   getActiveObjectStrokeDashArray: () => number[];
   getActiveObjectOpacity: () => number;
   getActiveObjectFontFamily: () => string;
+  getActiveObjectFontWeight: () => number;
+  getActiveObjectFontStyle: () => string;
+  getActiveObjectFontLineThrough: () => boolean;
+  getActiveObjectFontUnderline: () => boolean;
+  getActiveObjectTextAlign: () => string;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
@@ -112,6 +122,7 @@ export const STROKE_COLOR = 'rgba(0, 0, 0, 1)';
 export const STROKE_WIDTH = 1;
 export const FONT_FAMILY = 'Arial';
 export const FONT_SIZE = 40;
+export const FONT_WEIGHT = 400;
 
 export interface EditorHookProps {
   clearSelectionCallback?: () => void;

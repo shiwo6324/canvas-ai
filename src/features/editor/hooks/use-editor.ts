@@ -15,6 +15,7 @@ import {
   STROKE_DASH_ARRAY,
   TEXT_OPTIONS,
   FONT_FAMILY,
+  FONT_WEIGHT,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
@@ -52,6 +53,51 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    changeTextAlign: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ textAlign: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontUnderline: (value: boolean) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ underline: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontLineThrough: (value: boolean) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ linethrough: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontStyle: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ fontStyle: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontWeight: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ fontWeight: value });
+        }
+      });
+      canvas.renderAll();
+    },
     addText: (value, options) => {
       const object = new fabric.Textbox(value, {
         ...TEXT_OPTIONS,
@@ -59,6 +105,38 @@ const buildEditor = ({
         ...options,
       });
       addToCanvas(object);
+    },
+    getActiveObjectTextAlign: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        return selectedObject.get('textAlign') || 'left';
+      }
+      return 'left';
+    },
+    getActiveObjectFontUnderline: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        return selectedObject.get('underline') || false;
+      }
+      return false;
+    },
+    getActiveObjectFontLineThrough: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        return selectedObject.get('linethrough') || false;
+      }
+      return false;
+    },
+    getActiveObjectFontStyle: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        return selectedObject.get('fontStyle') || 'normal';
+      }
+      return 'normal';
     },
     getActiveObjectOpacity: () => {
       const selectedObject = selectedObjects[0];
@@ -268,6 +346,17 @@ const buildEditor = ({
 
       // 如果没有选中对象，返回默认的fillColor
       return fontFamily;
+    },
+    getActiveObjectFontWeight: () => {
+      const selectedObject = selectedObjects[0];
+      if (selectedObject) {
+        // @ts-ignore
+        const value = selectedObject.get('fontWeight') || FONT_WEIGHT;
+        return value;
+      }
+
+      // 如果没有选中对象，返回默认的fillColor
+      return FONT_WEIGHT;
     },
     getActiveObjectStrokeColor: () => {
       const selectedObject = selectedObjects[0];

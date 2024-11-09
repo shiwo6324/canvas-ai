@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
-import { ActiveTool, Editor } from '../types';
+import { ActiveTool, Editor, FONT_WEIGHT } from '../types';
 import Hint from '@/components/hint';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { BsBorderWidth } from 'react-icons/bs';
-import { ArrowDown, ArrowUp, ChevronDown } from 'lucide-react';
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  ArrowDown,
+  ArrowUp,
+  ChevronDown,
+} from 'lucide-react';
 import { RxTransparencyGrid } from 'react-icons/rx';
 import { isTextType } from '../utils';
+import {
+  FaAlignLeft,
+  FaBold,
+  FaItalic,
+  FaStrikethrough,
+  FaUnderline,
+} from 'react-icons/fa';
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -23,15 +37,32 @@ const Toolbar = ({
 }: ToolbarProps) => {
   // const selectedObject = editor?.canvas.getActiveObject();
   // 获取当前选中对象的填充颜色
-  const fillColor = editor?.getActiveObjectFillColor();
+  const initialFillColor = editor?.getActiveObjectFillColor();
   // 获取当前选中对象的边框颜色
-  const strokeColor = editor?.getActiveObjectStrokeColor();
+  const initialStrokeColor = editor?.getActiveObjectStrokeColor();
 
   const selectedObjectType = editor?.selectedObjects[0]?.type;
 
   const isSelectedObjectText = isTextType(selectedObjectType);
 
-  const fontFamily = editor?.getActiveObjectFontFamily();
+  const initialFontFamily = editor?.getActiveObjectFontFamily();
+  const initialFontStyle = editor?.getActiveObjectFontStyle();
+  const initialFontLinethrough = editor?.getActiveObjectFontLineThrough();
+  const initialFontUnderline = editor?.getActiveObjectFontUnderline();
+  const initialTextAlign = editor?.getActiveObjectTextAlign();
+
+  // fontWEight 的改变没有触发渲染，所以需要单独处理
+  const initialFontWeight = editor?.getActiveObjectFontWeight() || FONT_WEIGHT;
+  const [properties, setProperties] = useState({
+    fillColor: initialFillColor,
+    strokeColor: initialStrokeColor,
+    fontWeight: initialFontWeight,
+    fontFamily: initialFontFamily,
+    fontStyle: initialFontStyle,
+    fontLinethrough: initialFontLinethrough,
+    fontUnderline: initialFontUnderline,
+    textAlign: initialTextAlign,
+  });
 
   // 如果没有选中任何对象，则返回一个空的工具栏
   if (editor?.selectedObjects.length === 0) {
@@ -43,12 +74,20 @@ const Toolbar = ({
     );
   }
 
+  const changeTextAlign = (value: string) => {
+    if (!isSelectedObjectText) return;
+    editor?.changeTextAlign(value);
+    setProperties({
+      ...properties,
+      textAlign: value,
+    });
+  };
   return (
     <div
       className="shrink-0 h-[56px] border-b bg-white
     w-full flex overflow-x-auto items-center z-[49] p-2 gap-x-2"
     >
-      <div className="flex items-center h-full justify-center">
+      <div className="flex items-center h-full justify-center gap-2">
         <Hint label="color " side="bottom" sideOffset={5}>
           <Button
             onClick={() => onChangeActiveTool('fill')}
@@ -59,7 +98,7 @@ const Toolbar = ({
             <div
               className="rounded-sm size-4 border"
               style={{
-                backgroundColor: fillColor,
+                backgroundColor: properties.fillColor,
               }}
             ></div>
           </Button>
@@ -76,7 +115,7 @@ const Toolbar = ({
                 <div
                   className="rounded-sm size-4 border-2 bg-white"
                   style={{
-                    borderColor: strokeColor,
+                    borderColor: properties.strokeColor,
                   }}
                 ></div>
               </Button>
@@ -111,8 +150,153 @@ const Toolbar = ({
                   activeTool === 'font' && 'bg-gray-100'
                 )}
               >
-                <div className="max-w-[100px] truncate">{fontFamily}</div>
+                <div className="max-w-[100px] truncate">
+                  {properties.fontFamily}
+                </div>
                 <ChevronDown className="size-4 ml-2 shrink-0" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="加粗 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => {
+                  const selectedObject = editor?.selectedObjects[0];
+                  if (selectedObject) {
+                    const newFontWeight =
+                      properties.fontWeight > 500 ? FONT_WEIGHT : 700;
+                    editor?.changeFontWeight(newFontWeight);
+                    setProperties({
+                      ...properties,
+                      fontWeight: newFontWeight,
+                    });
+                  }
+                }}
+                size="icon"
+                variant="ghost"
+                className={cn(properties.fontWeight > 500 && 'bg-gray-100')}
+              >
+                <FaBold className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="斜体 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => {
+                  const selectedObject = editor?.selectedObjects[0];
+                  if (selectedObject) {
+                    const newFontStyle =
+                      properties.fontStyle === 'italic' ? 'normal' : 'italic';
+                    editor?.changeFontStyle(newFontStyle);
+                    setProperties({
+                      ...properties,
+                      fontStyle: newFontStyle,
+                    });
+                  }
+                }}
+                size="icon"
+                variant="ghost"
+                className={cn(
+                  properties.fontStyle === 'italic' && 'bg-gray-100'
+                )}
+              >
+                <FaItalic className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="删除线 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => {
+                  const newValue = properties.fontLinethrough ? false : true;
+                  editor?.changeFontLineThrough(newValue);
+                  setProperties({
+                    ...properties,
+                    fontLinethrough: newValue,
+                  });
+                }}
+                size="icon"
+                variant="ghost"
+                className={cn(properties.fontLinethrough && 'bg-gray-100')}
+              >
+                <FaStrikethrough className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="下划线 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => {
+                  editor?.changeFontUnderline(!properties.fontUnderline);
+                  setProperties({
+                    ...properties,
+                    fontUnderline: !properties.fontUnderline,
+                  });
+                }}
+                size="icon"
+                variant="ghost"
+                className={cn(properties.fontUnderline && 'bg-gray-100')}
+              >
+                <FaUnderline className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="居左 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => changeTextAlign('left')}
+                size="icon"
+                variant="ghost"
+                className={cn(properties.textAlign === 'left' && 'bg-gray-100')}
+              >
+                <AlignLeft className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="居中 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => changeTextAlign('center')}
+                size="icon"
+                variant="ghost"
+                className={cn(
+                  properties.textAlign === 'center' && 'bg-gray-100'
+                )}
+              >
+                <AlignCenter className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+        )}
+
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="居右 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => changeTextAlign('right')}
+                size="icon"
+                variant="ghost"
+                className={cn(
+                  properties.textAlign === 'right' && 'bg-gray-100'
+                )}
+              >
+                <AlignRight className="size-4" />
               </Button>
             </Hint>
           </div>
