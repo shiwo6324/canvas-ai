@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActiveTool, Editor, FONT_WEIGHT } from '../types';
+import { ActiveTool, Editor, FONT_SIZE, FONT_WEIGHT } from '../types';
 import Hint from '@/components/hint';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
+  Trash,
 } from 'lucide-react';
 import { RxTransparencyGrid } from 'react-icons/rx';
 import { isTextType } from '../utils';
@@ -21,6 +22,7 @@ import {
   FaStrikethrough,
   FaUnderline,
 } from 'react-icons/fa';
+import FontSizeInput from './font-size-input';
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -50,6 +52,7 @@ const Toolbar = ({
   const initialFontLinethrough = editor?.getActiveObjectFontLineThrough();
   const initialFontUnderline = editor?.getActiveObjectFontUnderline();
   const initialTextAlign = editor?.getActiveObjectTextAlign();
+  const initialFontSize = editor?.getActiveObjectFontSize();
 
   // fontWEight 的改变没有触发渲染，所以需要单独处理
   const initialFontWeight = editor?.getActiveObjectFontWeight() || FONT_WEIGHT;
@@ -62,6 +65,7 @@ const Toolbar = ({
     fontLinethrough: initialFontLinethrough,
     fontUnderline: initialFontUnderline,
     textAlign: initialTextAlign,
+    fontSize: initialFontSize,
   });
 
   // 如果没有选中任何对象，则返回一个空的工具栏
@@ -80,6 +84,15 @@ const Toolbar = ({
     setProperties({
       ...properties,
       textAlign: value,
+    });
+  };
+
+  const changeFontSize = (value: number) => {
+    if (!isSelectedObjectText) return;
+    editor?.changeFontSize(value);
+    setProperties({
+      ...properties,
+      fontSize: value,
     });
   };
   return (
@@ -302,6 +315,15 @@ const Toolbar = ({
           </div>
         )}
 
+        {isSelectedObjectText && (
+          <div className="flex items-center h-full justify-center">
+            <FontSizeInput
+              value={properties.fontSize || FONT_SIZE}
+              onChange={changeFontSize}
+            />
+          </div>
+        )}
+
         <div className="flex items-center h-full justify-center">
           <Hint label="上移 " side="bottom" sideOffset={5}>
             <Button
@@ -335,6 +357,18 @@ const Toolbar = ({
               className={cn(activeTool === 'opacity' && 'bg-gray-100')}
             >
               <RxTransparencyGrid className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+
+        <div className="flex items-center h-full justify-center">
+          <Hint label="删除 " side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => editor?.deleteObject()}
+              size="icon"
+              variant="ghost"
+            >
+              <Trash className="size-4" />
             </Button>
           </Hint>
         </div>

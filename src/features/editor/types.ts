@@ -82,6 +82,7 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+  deleteObject: () => void;
   bringForward: () => void;
   sendBackwards: () => void;
   addText: (value: string, options?: ITextOptions) => void;
@@ -102,6 +103,7 @@ export interface Editor {
   changeFontLineThrough: (value: boolean) => void;
   changeFontUnderline: (value: boolean) => void;
   changeTextAlign: (value: string) => void;
+  changeFontSize: (value: number) => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   getActiveObjectFillColor: () => string;
@@ -115,6 +117,7 @@ export interface Editor {
   getActiveObjectFontLineThrough: () => boolean;
   getActiveObjectFontUnderline: () => boolean;
   getActiveObjectTextAlign: () => string;
+  getActiveObjectFontSize: () => number;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
