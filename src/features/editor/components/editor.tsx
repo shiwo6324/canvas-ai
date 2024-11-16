@@ -14,6 +14,7 @@ import StrokeWidthSidebar from './stroke-width-sidebar';
 import OpacitySidebar from './opacity-sidebar';
 import TextSidebar from './text-sidebar';
 import FontSidebar from './font-sidebar';
+import ImageSidebar from './image-sidebar';
 const Editor = () => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -107,6 +108,11 @@ const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <FontSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <ImageSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

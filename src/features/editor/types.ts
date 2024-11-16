@@ -85,6 +85,7 @@ export interface Editor {
   deleteObject: () => void;
   bringForward: () => void;
   sendBackwards: () => void;
+  addImage: (url: string) => void;
   addText: (value: string, options?: ITextOptions) => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
