@@ -15,6 +15,7 @@ import { AlertTriangle, ExternalLink, Loader } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { UploadButton } from '@/lib/uploadthing';
 
 interface ImageSidebarProps {
   activeTool: ActiveTool;
@@ -40,6 +41,23 @@ const ImageSidebar = ({
       )}
     >
       <ToolSidebarHeader title="图片" description="添加图片到画布中" />
+
+      <div className="p-4 border-b">
+        <UploadButton
+          appearance={{
+            button: 'w-full text-sm font-medium ',
+            allowedContent: 'hidden',
+          }}
+          content={{
+            button: '上传图片',
+          }}
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            editor?.addImage(res[0].url);
+          }}
+        />
+      </div>
+
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center  ">
           <Loader className="size-4 text-muted-foreground animate-spin" />
