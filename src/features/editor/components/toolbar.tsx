@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ActiveTool, Editor, FONT_SIZE, FONT_WEIGHT } from '../types';
 import Hint from '@/components/hint';
+import { TbColorFilter } from 'react-icons/tb';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { BsBorderWidth } from 'react-icons/bs';
@@ -46,6 +47,7 @@ const Toolbar = ({
   const selectedObjectType = editor?.selectedObjects[0]?.type;
 
   const isSelectedObjectText = isTextType(selectedObjectType);
+  const isSelectedObjectImage = selectedObjectType === 'image';
 
   const initialFontFamily = editor?.getActiveObjectFontFamily();
   const initialFontStyle = editor?.getActiveObjectFontStyle();
@@ -100,7 +102,7 @@ const Toolbar = ({
       className="shrink-0 h-[56px] border-b bg-white
     w-full flex overflow-x-auto items-center z-[49] p-2 gap-x-2"
     >
-      <div className="flex items-center h-full justify-center gap-2">
+      {!isSelectedObjectImage && (
         <Hint label="color " side="bottom" sideOffset={5}>
           <Button
             onClick={() => onChangeActiveTool('fill')}
@@ -113,9 +115,11 @@ const Toolbar = ({
               style={{
                 backgroundColor: properties.fillColor,
               }}
-            ></div>
+            />
           </Button>
         </Hint>
+      )}
+      <div className="flex items-center h-full justify-center gap-2">
         {!isSelectedObjectText && (
           <div className="flex items-center h-full justify-center">
             <Hint label="边框颜色 " side="bottom" sideOffset={5}>
@@ -321,6 +325,21 @@ const Toolbar = ({
               value={properties.fontSize || FONT_SIZE}
               onChange={changeFontSize}
             />
+          </div>
+        )}
+
+        {isSelectedObjectImage && (
+          <div className="flex items-center h-full justify-center">
+            <Hint label="滤镜 " side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => onChangeActiveTool('filter')}
+                size="icon"
+                variant="ghost"
+                className={cn(activeTool === 'filter' && 'bg-gray-100')}
+              >
+                <TbColorFilter className="size-4" />
+              </Button>
+            </Hint>
           </div>
         )}
 

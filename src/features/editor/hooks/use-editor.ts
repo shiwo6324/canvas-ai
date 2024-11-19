@@ -19,7 +19,7 @@ import {
   FONT_SIZE,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
-import { isTextType } from '../utils';
+import { createFilter, isTextType } from '../utils';
 import { ITextOptions } from 'fabric/fabric-impl';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
@@ -54,6 +54,18 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    changeImageFilter: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (object.type === 'image') {
+          const imageObject = object as fabric.Image;
+          const effect = createFilter(value);
+
+          imageObject.filters = effect ? [effect] : [];
+          imageObject.applyFilters();
+          canvas.renderAll();
+        }
+      });
+    },
     addImage: (url: string) => {
       fabric.Image.fromURL(
         url,
