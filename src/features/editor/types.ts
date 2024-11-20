@@ -1,6 +1,30 @@
 import { ITextOptions } from 'fabric/fabric-impl';
 import * as material from 'material-colors';
 
+export const filters = [
+  { label: '无', value: 'none' },
+  { label: '宝丽来', value: 'polaroid' },
+  { label: '棕褐色', value: 'sepia' },
+  { label: '柯达胶片', value: 'kodachrome' },
+  { label: '对比度', value: 'contrast' },
+  { label: '亮度', value: 'brightness' },
+  { label: '布朗尼', value: 'brownie' },
+  { label: '复古', value: 'vinatge' },
+  { label: '特艺色彩', value: 'technicolor' },
+  { label: '像素化', value: 'pixelate' },
+  { label: '反相', value: 'invert' },
+  { label: '模糊', value: 'blur' },
+  { label: '锐化', value: 'sharpen' },
+  { label: '浮雕', value: 'emboss' },
+  { label: '移除颜色', value: 'removeColor' },
+  { label: '黑白', value: 'blacknWhite' },
+  { label: '鲜艳度', value: 'vibrance' },
+  { label: '混合颜色', value: 'blendColor' },
+  { label: '色相旋转', value: 'hueRotate' },
+  { label: '调整大小', value: 'resize' },
+  { label: '伽马值', value: 'gamma' },
+];
+
 export const fonts = [
   'Arial',
   'Arial Black',

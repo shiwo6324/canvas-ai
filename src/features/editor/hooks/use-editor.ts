@@ -149,6 +149,7 @@ const buildEditor = ({
       });
       addToCanvas(object);
     },
+
     getActiveObjectFontSize: () => {
       const selectedObject = selectedObjects[0];
       if (selectedObject) {
