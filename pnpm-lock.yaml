@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@hono/node-server':
+    specifier: ^1.13.7
+    version: 1.13.7(hono@4.6.10)
   '@hono/zod-validator':
     specifier: ^0.4.1
     version: 0.4.1(hono@4.6.10)(zod@3.23.8)
@@ -181,6 +184,15 @@ packages:
 
   /@floating-ui/utils@0.2.8:
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+    dev: false
+
+  /@hono/node-server@1.13.7(hono@4.6.10):
+    resolution: {integrity: sha512-kTfUMsoloVKtRA2fLiGSd9qBddmru9KadNyhJCwgKBxTiNkaAJEwkVN9KV/rS4HtmmNRtUh6P+YpmjRMl0d9vQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+    dependencies:
+      hono: 4.6.10
     dev: false
 
   /@hono/zod-validator@0.4.1(hono@4.6.10)(zod@3.23.8):

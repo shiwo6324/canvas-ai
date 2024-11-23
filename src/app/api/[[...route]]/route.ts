@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 const app = new Hono().basePath('/api');
 
-const routes = app.route('/images', images).route('/ai', ai);
+const routes = app.route('/ai', ai).route('/images', images);
 
 // 将 Hono 应用实例转换为 Next.js API 路由可以理解的格式。
 export const GET = handle(app);

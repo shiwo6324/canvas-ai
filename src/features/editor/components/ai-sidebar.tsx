@@ -25,9 +25,18 @@ const AiSidebar = ({
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutation.mutateAsync({ prompt: value }).then(({ data }) => {
-      editor?.addImage(data);
-    });
+    // mutation.mutateAsync({ prompt: value }).then(({ data }) => {
+    //   editor?.addImage(data);
+    // });
+
+    mutation.mutate(
+      { prompt: value },
+      {
+        onSuccess: ({ data }) => {
+          editor?.addImage(data);
+        },
+      }
+    );
   };
 
   const onClose = () => {
