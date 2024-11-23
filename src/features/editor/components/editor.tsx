@@ -17,6 +17,7 @@ import FontSidebar from './font-sidebar';
 import ImageSidebar from './image-sidebar';
 import FilterSidebar from './filter-sidebar';
 import AiSidebar from './ai-sidebar';
+import RemoveBgSidebar from './remove-bg-sidebar';
 const Editor = () => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -125,6 +126,11 @@ const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <AiSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <RemoveBgSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
