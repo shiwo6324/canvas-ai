@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useGenerateImage } from '@/features/ai/api/use-generate-image';
 import { AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
+import { useRemoveBackground } from '@/features/ai/api/use-remove-background';
 
 interface RemoveBgSidebarProps {
   activeTool: ActiveTool;
@@ -25,13 +26,22 @@ const RemoveBgSidebar = ({
   const selectedObject = editor?.selectedObjects[0];
   // @ts-ignore
   const imageSrc = selectedObject?._originalElement?.currentSrc;
-  const mutation = useGenerateImage();
+  const mutation = useRemoveBackground();
 
   const onClose = () => {
     onChangeActiveTool('select');
   };
 
-  const onClick = () => {};
+  const onClick = () => {
+    mutation.mutate(
+      { image: imageSrc },
+      {
+        onSuccess: ({ data }) => {
+          editor?.addImage(data);
+        },
+      }
+    );
+  };
 
   return (
     <aside
@@ -49,17 +59,23 @@ const RemoveBgSidebar = ({
       )}
       {imageSrc && (
         <ScrollArea>
-          <div
-            className={cn(
-              'relative aspect-square rounded-md overflow-hidden transition bg-muted',
-              false && 'opacity-50'
-            )}
-          >
-            <Image src={imageSrc} alt="图片" fill className="object-cover" />
+          <div className="p-4 space-y-4">
+            <div
+              className={cn(
+                'relative aspect-square rounded-md overflow-hidden transition bg-muted',
+                mutation.isPending && 'opacity-50'
+              )}
+            >
+              <Image src={imageSrc} alt="图片" fill className="object-cover" />
+            </div>
+            <Button
+              className="w-full"
+              onClick={onClick}
+              disabled={mutation.isPending}
+            >
+              移除背景
+            </Button>
           </div>
-          <Button className="w-full" onClick={onClick}>
-            移除背景
-          </Button>
         </ScrollArea>
       )}
       <ToolSidebarClose onClick={onClose} />
