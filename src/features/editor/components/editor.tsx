@@ -18,26 +18,11 @@ import ImageSidebar from './image-sidebar';
 import FilterSidebar from './filter-sidebar';
 import AiSidebar from './ai-sidebar';
 import RemoveBgSidebar from './remove-bg-sidebar';
+import DrawSidebar from './draw-sidebar';
 const Editor = () => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = React.useState<ActiveTool>('select');
-
-  const onChangeActiveTool = React.useCallback(
-    (tool: ActiveTool) => {
-      if (tool === activeTool) {
-        setActiveTool('select');
-        return;
-      }
-
-      if (tool === 'draw') {
-      }
-      if (activeTool === 'draw') {
-      }
-      setActiveTool(tool);
-    },
-    [activeTool]
-  );
 
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
@@ -48,6 +33,24 @@ const Editor = () => {
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection,
   });
+
+  const onChangeActiveTool = React.useCallback(
+    (tool: ActiveTool) => {
+      if (tool === 'draw') {
+        editor?.enableDraw();
+      }
+      if (activeTool === 'draw') {
+        editor?.disableDraw();
+      }
+      if (tool === activeTool) {
+        setActiveTool('select');
+        return;
+      }
+
+      setActiveTool(tool);
+    },
+    [activeTool, editor]
+  );
 
   useEffect(() => {
     // 创建一个新的 fabric.js Canvas 实例
@@ -131,6 +134,11 @@ const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <RemoveBgSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <DrawSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

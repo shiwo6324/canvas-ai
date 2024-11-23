@@ -12,6 +12,7 @@ import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
+  Copy,
   SquareSplitHorizontal,
   Trash,
 } from 'lucide-react';
@@ -392,6 +393,21 @@ const Toolbar = ({
               className={cn(activeTool === 'opacity' && 'bg-gray-100')}
             >
               <RxTransparencyGrid className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+
+        <div className="flex items-center h-full justify-center">
+          <Hint label="复制 " side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => {
+                editor?.copy();
+                editor?.paste();
+              }}
+              size="icon"
+              variant="ghost"
+            >
+              <Copy className="size-4" />
             </Button>
           </Hint>
         </div>

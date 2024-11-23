@@ -4,6 +4,7 @@ import { SidebarItem } from './sidebar-item';
 import {
   ImageIcon,
   LayoutTemplate,
+  Pencil,
   Settings,
   Shapes,
   Sparkles,
@@ -43,6 +44,12 @@ const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           label="图形"
           isActive={activeTool === 'shapes'}
           onClick={() => onChangeActiveTool('shapes')}
+        />
+        <SidebarItem
+          icon={Pencil}
+          label="画笔"
+          isActive={activeTool === 'draw'}
+          onClick={() => onChangeActiveTool('draw')}
         />
         <SidebarItem
           icon={Sparkles}

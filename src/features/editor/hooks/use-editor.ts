@@ -20,10 +20,12 @@ import {
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { createFilter, isTextType } from '../utils';
-import { ITextOptions } from 'fabric/fabric-impl';
+import { useClipboard } from './use-clipboard';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
 const buildEditor = ({
+  copy,
+  paste,
   canvas,
   fillColor,
   strokeColor,
@@ -54,6 +56,18 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    enableDraw: () => {
+      canvas.discardActiveObject();
+      canvas.renderAll();
+      canvas.isDrawingMode = true;
+      canvas.freeDrawingBrush.width = strokeWidth;
+      canvas.freeDrawingBrush.color = strokeColor;
+    },
+    disableDraw: () => {
+      canvas.isDrawingMode = false;
+    },
+    copy,
+    paste,
     changeImageFilter: (value: string) => {
       canvas.getActiveObjects().forEach((object) => {
         if (object.type === 'image') {
@@ -245,6 +259,8 @@ const buildEditor = ({
       canvas.getActiveObjects().forEach((object) => {
         object.set({ strokeWidth: value });
       });
+
+      canvas.freeDrawingBrush.width = value;
       canvas.renderAll();
     },
     changeStrokeDashArray: (value: number[]) => {
@@ -265,6 +281,7 @@ const buildEditor = ({
         // 如果是其他类型的对象，设置边框颜色
         object.set({ stroke: value });
       });
+      canvas.freeDrawingBrush.color = value;
       canvas.renderAll();
     },
     // 添加圆形的方法
@@ -451,6 +468,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [strokeDashArray, setStrokeDashArray] =
     React.useState<number[]>(STROKE_DASH_ARRAY);
 
+  // 使用 useClipboard hook 来获取剪贴板内容
+  const { copy, paste } = useClipboard({ canvas });
+
   // 使用 useAutoResize hook 来自动调整画布大小
   // 这个 hook 会监听 container 的大小变化，并相应地调整 canvas 的尺寸
   // 确保画布始终填满容器，保持响应式布局
@@ -470,6 +490,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const editor = useMemo(() => {
     if (canvas)
       return buildEditor({
+        copy,
+        paste,
         canvas,
         fillColor,
         setFillColor,
