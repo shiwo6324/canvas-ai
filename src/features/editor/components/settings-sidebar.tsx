@@ -3,11 +3,11 @@ import { ActiveTool, Editor, FILL_COLOR } from '../types';
 import { cn } from '@/lib/utils';
 import ToolSidebarHeader from './tool-sidebar-header';
 import ToolSidebarClose from './tool-sidebar-close';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
 import ColorPicker from './color-picker';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SettingsSidebarProps {
   activeTool: ActiveTool;
