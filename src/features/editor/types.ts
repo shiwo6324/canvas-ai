@@ -1,6 +1,17 @@
 import { ITextOptions } from 'fabric/fabric-impl';
 import * as material from 'material-colors';
 
+export const JSON_KEYS = [
+  'name',
+  'gradientAngle',
+  'selectable',
+  'hasControls',
+  'linKData',
+  'editable',
+  'extensionType',
+  'extension',
+];
+
 export const filters = [
   { label: '无', value: 'none' },
   { label: '宝丽来', value: 'polaroid' },
