@@ -17,6 +17,7 @@ import {
   FONT_FAMILY,
   FONT_WEIGHT,
   FONT_SIZE,
+  JSON_KEYS,
 } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { createFilter, isTextType } from '../utils';
@@ -25,6 +26,11 @@ import { useHistory } from './use-history';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
 const buildEditor = ({
+  save,
+  undo,
+  redo,
+  canRedo,
+  canUndo,
   autoZoom,
   copy,
   paste,
@@ -60,6 +66,10 @@ const buildEditor = ({
   return {
     autoZoom,
     getWorkspace,
+    onUndo: () => undo(),
+    onRedo: () => redo(),
+    canUndo,
+    canRedo,
     zoomIn: () => {
       let zoomRatio = canvas.getZoom();
       zoomRatio += 0.05;
@@ -79,11 +89,13 @@ const buildEditor = ({
       const workSpace = getWorkspace();
       workSpace?.set(size);
       autoZoom();
+      save();
     },
     changeBackground: (color: string) => {
       const workSpace = getWorkspace();
       workSpace?.set({ fill: color });
       canvas.renderAll();
+      save();
     },
     enableDraw: () => {
       canvas.discardActiveObject();
@@ -500,7 +512,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   // 使用 useClipboard hook 来获取剪贴板内容
   const { copy, paste } = useClipboard({ canvas });
 
-  const { save } = useHistory({ canvas });
+  const { save, undo, redo, canRedo, canUndo, canvasHistory, setHistoryIndex } =
+    useHistory({ canvas });
 
   // 使用 useAutoResize hook 来自动调整画布大小
   // 这个 hook 会监听 container 的大小变化，并相应地调整 canvas 的尺寸
@@ -522,6 +535,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const editor = useMemo(() => {
     if (canvas)
       return buildEditor({
+        save,
+        canRedo,
+        canUndo,
+        redo,
+        undo,
         autoZoom,
         copy,
         paste,
@@ -548,6 +566,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeDashArray,
     fontFamily,
     autoZoom,
+    canRedo,
+    canUndo,
+    save,
+    undo,
+    redo,
   ]);
 
   // 定义初始化函数
@@ -596,9 +619,13 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       setCanvas(initialCanvas);
       setContainer(initialContainer);
 
+      const currentState = JSON.stringify(initialCanvas.toJSON(JSON_KEYS));
+      canvasHistory.current = [currentState];
+      setHistoryIndex(0);
+
       // initialCanvas.add(test);
     },
-    []
+    [canvasHistory, setHistoryIndex]
   );
 
   // 返回初始化函数

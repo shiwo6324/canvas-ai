@@ -22,15 +22,16 @@ import {
 import { Separator } from '@/components/ui/separator';
 import Hint from '@/components/hint';
 import { BsCloudCheck } from 'react-icons/bs';
-import { ActiveTool } from '../types';
+import { ActiveTool, Editor } from '../types';
 import { cn } from '@/lib/utils';
 
 interface NavbarProps {
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  editor: Editor | undefined;
 }
 
-const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
+const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
   return (
     <div
       className="w-full flex items-center p-4 h-[68px] gap-x-8
@@ -69,14 +70,24 @@ const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
           </Button>
         </Hint>
 
-        <Hint label="上一步" side="bottom" sideOffset={10}>
-          <Button size="icon" variant="ghost" className="">
+        <Hint label="撤销" side="bottom" sideOffset={10}>
+          <Button
+            disabled={!editor?.canUndo()}
+            onClick={() => editor?.onUndo()}
+            size="icon"
+            variant="ghost"
+          >
             <Undo2 className="size-4  " />
           </Button>
         </Hint>
 
-        <Hint label="下一步" side="bottom" sideOffset={10}>
-          <Button size="icon" variant="ghost" className="">
+        <Hint label="重做" side="bottom" sideOffset={10}>
+          <Button
+            disabled={!editor?.canRedo()}
+            size="icon"
+            variant="ghost"
+            onClick={() => editor?.onRedo()}
+          >
             <Redo2 className="size-4  " />
           </Button>
         </Hint>
