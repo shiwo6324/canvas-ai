@@ -23,6 +23,7 @@ import { useCanvasEvents } from './use-canvas-events';
 import { createFilter, isTextType } from '../utils';
 import { useClipboard } from './use-clipboard';
 import { useHistory } from './use-history';
+import { useHotKeys } from './use-hot-keys';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
 const buildEditor = ({
@@ -528,6 +529,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     canvas,
     setSelectedObjects,
     clearSelectionCallback,
+  });
+
+  useHotKeys({
+    canvas,
+    undo,
+    redo,
+    save,
+    copy,
+    paste,
   });
 
   // 编辑器对象
