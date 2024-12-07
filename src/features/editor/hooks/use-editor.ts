@@ -68,47 +68,65 @@ const buildEditor = ({
     };
   };
 
+  // 保存为PNG格式图片
   const savePng = () => {
+    // 获取保存选项
     const options = generateSaveOptions();
+    // 重置视图变换为默认状态
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    // 将画布转换为DataURL
     const dataUrl = canvas.toDataURL(options);
+    // 下载PNG文件
     downloadFile(dataUrl, 'png');
-    autoZoom();
+    // autoZoom();
   };
 
+  // 保存为SVG格式图片
   const saveSvg = () => {
     const options = generateSaveOptions();
+    // 重置视图变换为默认状态
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    // 将画布转换为DataURL
     const dataUrl = canvas.toDataURL(options);
+    // 下载SVG文件
     downloadFile(dataUrl, 'svg');
-    autoZoom();
+    // autoZoom();
   };
 
+  // 保存为JPG格式图片
   const saveJpg = () => {
     const options = generateSaveOptions();
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const dataUrl = canvas.toDataURL(options);
+    // 下载JPG文件
     downloadFile(dataUrl, 'jpg');
-    autoZoom();
+    // autoZoom();
   };
 
+  // 保存为JSON格式文件
   const saveJson = async () => {
     const dataUrl = canvas.toJSON(JSON_KEYS);
-    // Transform the text objects to textarea so that no data is lost when importing the JSON
+    // 转换文本对象为textarea以确保导入JSON时不会丢失数据
     transformText(dataUrl.objects);
+    // 创建JSON文件字符串
     const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(dataUrl, null, '\t')
     )}`;
+    // 下载JSON文件
     downloadFile(fileString, 'json');
   };
 
+  // 导入JSON格式文件
   const importJson = (jsonString: string) => {
+    // 解析JSON字符串
     const data = JSON.parse(jsonString);
 
+    // 从JSON加载画布内容
     canvas.loadFromJSON(data, () => {
+      // 重新渲染画布
       canvas.renderAll();
-      // reset the zoom level
-      autoZoom();
+      // 重置缩放级别
+      // autoZoom();
     });
   };
 
