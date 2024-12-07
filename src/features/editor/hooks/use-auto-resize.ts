@@ -29,6 +29,8 @@ export const useAutoResize = ({ canvas, container }: UserAutoResizeProps) => {
       .getObjects()
       .find((object) => object.name === 'clip');
 
+    if (!localWorkspace) return;
+
     // 计算适合容器的缩放比例
     // @ts-ignore
     const scale = fabric.util.findScaleToFit(localWorkspace, {

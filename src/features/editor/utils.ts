@@ -1,5 +1,29 @@
 import { RGBColor } from 'react-color';
 import { fabric } from 'fabric';
+import { uuid } from 'uuidv4';
+
+export function downloadFile(dataUrl: string, type: string) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = `${uuid()}.${type}`;
+  a.click();
+}
+
+// 将文本对象(text)转换为文本框对象(textbox)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const transformText = (objects: any) => {
+  if (!objects) return;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  objects.forEach((object: any) => {
+    // 递归调用函数来转换嵌套对象中的文本
+    if (object.objects) {
+      transformText(object.objects);
+    } else {
+      object.type === 'text' && (object.type = 'textbox');
+    }
+  });
+};
 
 export function isTextType(type: string | undefined) {
   return type === 'text' || type === 'i-text' || type === 'textbox';

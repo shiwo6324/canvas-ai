@@ -24,6 +24,7 @@ import Hint from '@/components/hint';
 import { BsCloudCheck } from 'react-icons/bs';
 import { ActiveTool, Editor } from '../types';
 import { cn } from '@/lib/utils';
+import { useFilePicker } from 'use-file-picker';
 
 interface NavbarProps {
   activeTool: ActiveTool;
@@ -32,6 +33,22 @@ interface NavbarProps {
 }
 
 const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
+  const { openFilePicker } = useFilePicker({
+    accept: '.json',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onFilesSuccessfullySelected: ({ plainFiles }: any) => {
+      if (plainFiles && plainFiles.length > 0) {
+        const file = plainFiles[0];
+        const reader = new FileReader();
+        reader.readAsText(file, 'UTF-8');
+        reader.onload = (e) => {
+          const content = e.target?.result;
+          editor?.importJson(content as string);
+        };
+      }
+    },
+  });
+
   return (
     <div
       className="w-full flex items-center p-4 h-[68px] gap-x-8
@@ -48,7 +65,10 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-60">
-            <DropdownMenuItem className="flex items-center gap-x-2">
+            <DropdownMenuItem
+              className="flex items-center gap-x-2"
+              onClick={openFilePicker}
+            >
               <CiFileOn className="size-8" />
               <div>
                 <p>打开</p>
@@ -106,7 +126,10 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-60">
-            <DropdownMenuItem className="flex items-center gap-x-2">
+            <DropdownMenuItem
+              className="flex items-center gap-x-2"
+              onClick={() => editor?.saveJson()}
+            >
               <CiFileOn className="size-8" />
               <div>
                 <p>JSON</p>
@@ -116,7 +139,10 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
               </div>
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="flex items-center gap-x-2">
+            <DropdownMenuItem
+              className="flex items-center gap-x-2"
+              onClick={() => editor?.savePng()}
+            >
               <CiFileOn className="size-8" />
               <div>
                 <p>PNG</p>
@@ -125,7 +151,10 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
                 </p>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-x-2">
+            <DropdownMenuItem
+              className="flex items-center gap-x-2"
+              onClick={() => editor?.saveJpg()}
+            >
               <CiFileOn className="size-8" />
               <div>
                 <p>JPG</p>
@@ -134,7 +163,10 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
                 </p>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-x-2">
+            <DropdownMenuItem
+              className="flex items-center gap-x-2"
+              onClick={() => editor?.saveSvg()}
+            >
               <CiFileOn className="size-8" />
               <div>
                 <p>SVG</p>

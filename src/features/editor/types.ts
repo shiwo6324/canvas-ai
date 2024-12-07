@@ -177,6 +177,11 @@ export interface Editor {
   getActiveObjectFontUnderline: () => boolean;
   getActiveObjectTextAlign: () => string;
   getActiveObjectFontSize: () => number;
+  savePng: () => void;
+  saveSvg: () => void;
+  saveJpg: () => void;
+  saveJson: () => void;
+  importJson: (jsonString: string) => void;
 }
 
 export const FILL_COLOR = 'rgba(0, 0, 0, 1)';
