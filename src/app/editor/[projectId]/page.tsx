@@ -1,10 +1,11 @@
-import Editor from '@/features/editor/components/editor'
-import React from 'react'
+import Editor from '@/features/editor/components/editor';
+import React from 'react';
+import { protectServer } from '@/features/auth/utils';
 
-const EditorProjectPage = () => {
-  return (
-    <Editor />
-  )
-}
+const EditorProjectPage = async () => {
+  await protectServer();
 
-export default EditorProjectPage
+  return <Editor />;
+};
+
+export default EditorProjectPage;

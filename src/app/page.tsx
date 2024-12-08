@@ -1,7 +1,7 @@
-import { auth } from '@/auth';
-import Image from 'next/image';
+import { protectServer } from '@/features/auth/utils';
 
 export default async function Home() {
-  const session = await auth();
-  return <div>{JSON.stringify(session)}</div>;
+  await protectServer();
+
+  return <div>您已登录</div>;
 }
