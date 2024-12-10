@@ -19,6 +19,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
+      async authorize(credentials) {
+        // const user = await db.query.users.findFirst({
+        //   where: eq(users.email, credentials.email),
+        // });
+      },
     }),
     GitHub,
     Google,
