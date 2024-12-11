@@ -3,14 +3,22 @@ import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import bcrypt from 'bcryptjs';
 import { db } from '@/db/';
 import { JWT } from 'next-auth/jwt';
-
+import { z } from 'zod';
+import { eq } from 'drizzle-orm';
+import { users } from './db/schema';
 declare module 'next-auth/jwt' {
   interface JWT {
     id: string | undefined;
   }
 }
+
+const CredentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -20,9 +28,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // const user = await db.query.users.findFirst({
-        //   where: eq(users.email, credentials.email),
-        // });
+        const validatedFields = CredentialsSchema.safeParse(credentials);
+        if (!validatedFields.success) return null;
+
+        const { email, password } = validatedFields.data;
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email));
+        if (!user || !user.password) return null;
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) return null;
+
+        return user;
       },
     }),
     GitHub,

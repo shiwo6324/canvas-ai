@@ -14,14 +14,35 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useSignUp } from '../hooks/use-sign-up';
+import { TriangleAlert } from 'lucide-react';
 
 const SignUpCard = () => {
+  const mutation = useSignUp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const onSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    mutation.mutate(
+      {
+        name,
+        email,
+        password,
+      },
+      {
+        onSuccess: () => {
+          // toast.success('注册成功');
+          signIn('credentials', {
+            email,
+            password,
+            redirect: true,
+            redirectTo: '/',
+          });
+        },
+      }
+    );
   };
 
   const onProviderSignUp = (provider: 'github' | 'google') => {
@@ -34,6 +55,13 @@ const SignUpCard = () => {
         <CardDescription>使用Email或者其他方式注册</CardDescription>
       </CardHeader>
 
+      {!!mutation.error && (
+        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>{mutation.error.message}</p>
+        </div>
+      )}
+
       <CardContent className="space-y-5 px-0 pb-0">
         <form onSubmit={onSignUp} className="space-y-2.5">
           <Input
@@ -44,6 +72,7 @@ const SignUpCard = () => {
             required
             minLength={2}
             maxLength={15}
+            disabled={mutation.isPending}
           />
           <Input
             type="email"
@@ -51,6 +80,7 @@ const SignUpCard = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={mutation.isPending}
           />
           <Input
             type="password"
@@ -60,8 +90,14 @@ const SignUpCard = () => {
             required
             minLength={5}
             maxLength={15}
+            disabled={mutation.isPending}
           />
-          <Button className="w-full" size="lg" type="submit">
+          <Button
+            disabled={mutation.isPending}
+            className="w-full"
+            size="lg"
+            type="submit"
+          >
             注册
           </Button>
         </form>
@@ -72,6 +108,7 @@ const SignUpCard = () => {
             variant="outline"
             size="lg"
             className="w-full relative"
+            disabled={mutation.isPending}
           >
             <FaGithub className="mr-2 size-5 top-2.5 left-2.5 absolute" />
             使用GitHub注册
@@ -82,6 +119,7 @@ const SignUpCard = () => {
             variant="outline"
             size="lg"
             className="w-full relative"
+            disabled={mutation.isPending}
           >
             <FcGoogle className="mr-2 size-5 top-2.5 left-2.5 absolute" />
             使用Google注册

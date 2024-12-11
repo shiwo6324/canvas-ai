@@ -14,10 +14,14 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useSearchParams } from 'next/navigation';
+import { TriangleAlert } from 'lucide-react';
 
 const SignInCard = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const params = useSearchParams();
+  const error = params.get('error');
 
   const onSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,6 +41,12 @@ const SignInCard = () => {
         <CardTitle>登录</CardTitle>
         <CardDescription>使用Email或者其他方式登录</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>账号或密码错误</p>
+        </div>
+      )}
 
       <CardContent className="space-y-5 px-0 pb-0">
         <form onSubmit={onSignIn} className="space-y-2.5">
