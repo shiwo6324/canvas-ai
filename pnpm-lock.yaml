@@ -5,9 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@auth/core':
+    specifier: 0.37.4
+    version: 0.37.4
   '@auth/drizzle-adapter':
     specifier: ^1.7.4
     version: 1.7.4
+  '@hono/auth-js':
+    specifier: ^1.0.15
+    version: 1.0.15(@auth/core@0.37.4)(hono@4.6.10)(react@18.0.0)
   '@hono/node-server':
     specifier: ^1.13.7
     version: 1.13.7(hono@4.6.10)
@@ -923,6 +929,19 @@ packages:
 
   /@floating-ui/utils@0.2.8:
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+    dev: false
+
+  /@hono/auth-js@1.0.15(@auth/core@0.37.4)(hono@4.6.10)(react@18.0.0):
+    resolution: {integrity: sha512-nuTP9zZBjJnHTCybQhC3cbTgboElhnlSuPFFogRcDUs9uqBd1mC2EM2jFlaErqim3laU325jP4j2tRCqiZnRHQ==}
+    engines: {node: '>=18.4.0'}
+    peerDependencies:
+      '@auth/core': 0.*
+      hono: '>=3.*'
+      react: ^18 || ^19 || ^19.0.0-rc
+    dependencies:
+      '@auth/core': 0.37.4
+      hono: 4.6.10
+      react: 18.0.0
     dev: false
 
   /@hono/node-server@1.13.7(hono@4.6.10):

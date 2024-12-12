@@ -1,10 +1,11 @@
 import { unsplash } from '@/lib/unsplash';
+import { verifyAuth } from '@hono/auth-js';
 import { Hono } from 'hono';
 
 const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_COLLECTION_IDS = ['317009'];
 
-const app = new Hono().get('/', async (c) => {
+const app = new Hono().get('/', verifyAuth(), async (c) => {
   const images = await unsplash.photos.getRandom({
     count: DEFAULT_PAGE_SIZE,
     collectionIds: DEFAULT_COLLECTION_IDS,
