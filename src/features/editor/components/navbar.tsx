@@ -25,6 +25,7 @@ import { BsCloudCheck } from 'react-icons/bs';
 import { ActiveTool, Editor } from '../types';
 import { cn } from '@/lib/utils';
 import { useFilePicker } from 'use-file-picker';
+import UserButton from '@/features/auth/components/user-button';
 
 interface NavbarProps {
   activeTool: ActiveTool;
@@ -177,6 +178,7 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <UserButton />
       </div>
     </div>
   );

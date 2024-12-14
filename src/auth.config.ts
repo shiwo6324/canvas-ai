@@ -88,9 +88,9 @@ export default {
   ],
   // Change default sign in and sign out pages
   pages: {
-    signIn: '/login',
-    signOut: '/logout',
-    error: '/login',
+    // signIn: '/login',
+    // signOut: '/logout',
+    // error: '/login',
   },
   // Note: Credential authentication works only with jwt strategy
   // By default, auth.js uses database session strategy
