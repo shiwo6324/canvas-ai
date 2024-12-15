@@ -15,6 +15,27 @@
       "when": 1733838022637,
       "tag": "0001_sleepy_jimmy_woo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1734241823067,
+      "tag": "0002_wealthy_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1734242783382,
+      "tag": "0003_thick_starfox",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1734246223065,
+      "tag": "0004_mature_venus",
+      "breakpoints": true
     }
   ]
 }

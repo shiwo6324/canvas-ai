@@ -6,6 +6,7 @@ import users from './users';
 // import type { AuthConfig } from '@auth/core/types';
 import { initAuthConfig, AuthConfig } from '@hono/auth-js';
 import authConfig from '@/auth.config';
+import projects from './projects';
 export const runtime = 'nodejs';
 
 function getAuthConfig(c: Context): AuthConfig {
@@ -22,7 +23,8 @@ app.use('*', initAuthConfig(getAuthConfig));
 const routes = app
   .route('/ai', ai)
   .route('/images', images)
-  .route('/users', users);
+  .route('/users', users)
+  .route('/projects', projects);
 
 // 将 Hono 应用实例转换为 Next.js API 路由可以理解的格式。
 export const GET = handle(app);

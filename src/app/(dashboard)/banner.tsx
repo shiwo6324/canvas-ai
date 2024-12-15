@@ -1,8 +1,29 @@
+'use client';
 import { Button } from '@/components/ui/button';
+import { useCreateProject } from '@/features/projects/api/use-create-project';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const Banner = () => {
+  const mutation = useCreateProject();
+  const router = useRouter();
+
+  const onClick = () => {
+    mutation.mutate(
+      {
+        name: '未命名项目',
+        json: '',
+        width: 900,
+        height: 1200,
+      },
+      {
+        onSuccess: ({ data }) => {
+          router.push(`/editor/${data[0].id}`);
+        },
+      }
+    );
+  };
   return (
     <div
       className="aspect-[5/1] min-h-[248px] 
@@ -28,7 +49,12 @@ const Banner = () => {
         <p className="text-white text-sm mb-2">
           AI加持创作，让您的想象力插上翅膀。
         </p>
-        <Button className="w-[160px]" variant="secondary">
+        <Button
+          disabled={mutation.isPending}
+          className="w-[160px]"
+          variant="secondary"
+          onClick={onClick}
+        >
           开始创作
           <ArrowRight className="size-4 ml-2" />
         </Button>
