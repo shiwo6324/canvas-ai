@@ -20,7 +20,9 @@ import AiSidebar from './ai-sidebar';
 import RemoveBgSidebar from './remove-bg-sidebar';
 import DrawSidebar from './draw-sidebar';
 import SettingsSidebar from './settings-sidebar';
-const Editor = () => {
+import { Project } from '@/features/projects/api/use-get-project';
+
+const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = React.useState<ActiveTool>('select');
