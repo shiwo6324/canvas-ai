@@ -6,10 +6,16 @@ import { db } from '@/db';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 const app = new Hono()
-  .get(
+  .patch(
     '/:id',
     verifyAuth(),
     zValidator('param', z.object({ id: z.string() })),
+    zValidator(
+      'json',
+      projectsSchema
+        .omit({ id: true, userId: true, createdAt: true, updatedAt: true })
+        .partial()
+    ),
     async (c) => {
       const auth = c.get('authUser');
       const { id } = c.req.valid('param');
