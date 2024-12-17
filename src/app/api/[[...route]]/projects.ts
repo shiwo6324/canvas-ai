@@ -19,7 +19,35 @@ const app = new Hono()
     async (c) => {
       const auth = c.get('authUser');
       const { id } = c.req.valid('param');
+      const values = c.req.valid('json');
 
+      if (!auth.token?.id) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const project = await db
+        .update(projects)
+        .set({
+          ...values,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(eq(projects.userId, auth.token.id as string), eq(projects.id, id))
+        )
+        .returning();
+      if (project.length === 0) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+      return c.json({ data: project[0] });
+    }
+  )
+  .get(
+    '/:id',
+    verifyAuth(),
+    zValidator('param', z.object({ id: z.string() })),
+    async (c) => {
+      const auth = c.get('authUser');
+      const { id } = c.req.valid('param');
       if (!auth.token?.id) {
         return c.json({ error: 'Unauthorized' }, 401);
       }
@@ -29,7 +57,8 @@ const app = new Hono()
         .from(projects)
         .where(
           and(eq(projects.userId, auth.token.id as string), eq(projects.id, id))
-        );
+        )
+        .limit(1);
       if (project.length === 0) {
         return c.json({ error: '项目不存在' }, 404);
       }

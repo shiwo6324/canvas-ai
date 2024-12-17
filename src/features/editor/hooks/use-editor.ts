@@ -582,7 +582,10 @@ const buildEditor = ({
   };
 };
 
-export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+export const useEditor = ({
+  clearSelectionCallback,
+  saveCallback,
+}: EditorHookProps) => {
   // 创建 canvas 和 container 状态
   const [canvas, setCanvas] = React.useState<fabric.Canvas | null>(null);
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -603,7 +606,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   useWindowEvents();
 
   const { save, undo, redo, canRedo, canUndo, canvasHistory, setHistoryIndex } =
-    useHistory({ canvas });
+    useHistory({ canvas, saveCallback });
 
   // 使用 useAutoResize hook 来自动调整画布大小
   // 这个 hook 会监听 container 的大小变化，并相应地调整 canvas 的尺寸

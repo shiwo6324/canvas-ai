@@ -21,11 +21,20 @@ import RemoveBgSidebar from './remove-bg-sidebar';
 import DrawSidebar from './draw-sidebar';
 import SettingsSidebar from './settings-sidebar';
 import { Project } from '@/features/projects/api/use-get-project';
+import { useUpdateProject } from '@/features/projects/api/use-update-project';
 
 const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const canvasRef = React.useRef(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = React.useState<ActiveTool>('select');
+  const { mutate: updateProject } = useUpdateProject(initialData.id);
+
+  const saveProject = useCallback(
+    (values: { json: string; width: number; height: number }) => {
+      updateProject(values);
+    },
+    [updateProject]
+  );
 
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
@@ -35,6 +44,7 @@ const Editor = ({ initialData }: { initialData: Project['data'] }) => {
 
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection,
+    saveCallback: saveProject,
   });
 
   const onChangeActiveTool = React.useCallback(

@@ -193,6 +193,11 @@ export const FONT_WEIGHT = 400;
 
 export interface EditorHookProps {
   clearSelectionCallback?: () => void;
+  saveCallback?: (values: {
+    json: string;
+    width: number;
+    height: number;
+  }) => void;
 }
 
 export const CRICLE_OPTIONS = {

@@ -32,7 +32,7 @@ export const useHistory = ({ canvas, saveCallback }: Props) => {
 
       const workspace = canvas
         .getObjects()
-        .find((object) => object.name === 'defaultCanvasWorkspace');
+        .find((object) => object.name === 'clip');
       const height = workspace?.height || 0;
       const width = workspace?.width || 0;
 
