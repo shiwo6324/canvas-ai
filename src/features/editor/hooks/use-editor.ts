@@ -30,6 +30,7 @@ import { useClipboard } from './use-clipboard';
 import { useHistory } from './use-history';
 import { useHotKeys } from './use-hot-keys';
 import { useWindowEvents } from './use-window-events';
+import { useLoadState } from './use-load-state';
 
 // 构建编辑器函数，接收一个包含 canvas 属性的对象作为参数
 const buildEditor = ({
@@ -585,7 +586,13 @@ const buildEditor = ({
 export const useEditor = ({
   clearSelectionCallback,
   saveCallback,
+  defaultState,
+  defaultWidth,
+  defaultHeight,
 }: EditorHookProps) => {
+  const initialState = React.useRef(defaultState);
+  const initalWidth = React.useRef(defaultWidth);
+  const initalHeight = React.useRef(defaultHeight);
   // 创建 canvas 和 container 状态
   const [canvas, setCanvas] = React.useState<fabric.Canvas | null>(null);
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -632,6 +639,13 @@ export const useEditor = ({
     paste,
   });
 
+  useLoadState({
+    autoZoom,
+    canvas,
+    initialState,
+    canvasHistory,
+    setCanvasHistoryIndex: setHistoryIndex,
+  });
   // 编辑器对象
   // 只有当 canvas 发生变化时才重新创建编辑器
   const editor = useMemo(() => {
@@ -697,8 +711,8 @@ export const useEditor = ({
 
       // 创建初始工作区
       const initialWorkspace = new fabric.Rect({
-        width: 900,
-        height: 1200,
+        width: initalWidth.current,
+        height: initalHeight.current,
         name: 'clip',
         fill: 'white',
         selectable: false,

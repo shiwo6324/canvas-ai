@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import {
   ChevronDown,
   Download,
+  Loader,
   MousePointer,
   MousePointerClick,
   Redo2,
@@ -21,19 +22,26 @@ import {
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import Hint from '@/components/hint';
-import { BsCloudCheck } from 'react-icons/bs';
+import { BsCloudCheck, BsCloudSlash } from 'react-icons/bs';
 import { ActiveTool, Editor } from '../types';
 import { cn } from '@/lib/utils';
 import { useFilePicker } from 'use-file-picker';
 import UserButton from '@/features/auth/components/user-button';
+import { useMutationState } from '@tanstack/react-query';
 
 interface NavbarProps {
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
   editor: Editor | undefined;
+  id: string;
 }
 
-const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
+const Navbar = ({
+  activeTool,
+  onChangeActiveTool,
+  editor,
+  id,
+}: NavbarProps) => {
   const { openFilePicker } = useFilePicker({
     accept: '.json',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,6 +57,24 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
       }
     },
   });
+
+  // 使用 useMutationState 获取项目保存状态
+  const data = useMutationState({
+    filters: {
+      // 过滤指定项目ID的mutation状态
+      mutationKey: ['project', { id }],
+      exact: true,
+    },
+    // 从mutation数据中选择状态信息
+    select: (data) => data?.state?.status,
+  });
+
+  // 获取最新的状态
+  const currentState = data[data.length - 1];
+
+  // 判断是否出错或加载中
+  const isError = currentState === 'error';
+  const isLoading = currentState === 'pending';
 
   return (
     <div
@@ -113,10 +139,24 @@ const Navbar = ({ activeTool, onChangeActiveTool, editor }: NavbarProps) => {
           </Button>
         </Hint>
         <Separator orientation="vertical" className="mx-2" />
-        <div className="flex items-center gap-x-2">
-          <BsCloudCheck className="size-[20px] text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">已保存</p>
-        </div>
+        {!isLoading && isError && (
+          <div className="flex items-center gap-x-2">
+            <BsCloudSlash className="size-[20px] text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">保存失败</p>
+          </div>
+        )}
+        {isLoading && (
+          <div className="flex items-center gap-x-2">
+            <Loader className="size-4 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">保存中...</p>
+          </div>
+        )}
+        {!isLoading && !isError && (
+          <div className="flex items-center gap-x-2">
+            <BsCloudCheck className="size-[20px] text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">已保存</p>
+          </div>
+        )}
       </div>
       <div className="ml-auto flex items-center gap-x-4">
         <DropdownMenu modal={false}>

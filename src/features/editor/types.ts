@@ -198,6 +198,9 @@ export interface EditorHookProps {
     width: number;
     height: number;
   }) => void;
+  defaultState?: string;
+  defaultWidth?: number;
+  defaultHeight?: number;
 }
 
 export const CRICLE_OPTIONS = {

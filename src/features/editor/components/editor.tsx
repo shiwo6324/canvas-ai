@@ -22,6 +22,7 @@ import DrawSidebar from './draw-sidebar';
 import SettingsSidebar from './settings-sidebar';
 import { Project } from '@/features/projects/api/use-get-project';
 import { useUpdateProject } from '@/features/projects/api/use-update-project';
+import { useDebounceFn } from 'ahooks';
 
 const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const canvasRef = React.useRef(null);
@@ -30,9 +31,12 @@ const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const { mutate: updateProject } = useUpdateProject(initialData.id);
 
   const saveProject = useCallback(
-    (values: { json: string; width: number; height: number }) => {
-      updateProject(values);
-    },
+    useDebounceFn(
+      (values: { json: string; width: number; height: number }) => {
+        updateProject(values);
+      },
+      { wait: 500 }
+    ).run,
     [updateProject]
   );
 
@@ -45,6 +49,9 @@ const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection,
     saveCallback: saveProject,
+    defaultState: initialData.json,
+    defaultWidth: initialData.width,
+    defaultHeight: initialData.height,
   });
 
   const onChangeActiveTool = React.useCallback(
@@ -91,6 +98,7 @@ const Editor = ({ initialData }: { initialData: Project['data'] }) => {
         editor={editor}
         activeTool={activeTool}
         onChangeActiveTool={onChangeActiveTool}
+        id={initialData.id}
       />
       <div
         className="absolute h-[calc(100%-68px)] 
