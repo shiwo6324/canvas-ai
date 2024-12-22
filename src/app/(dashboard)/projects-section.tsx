@@ -22,6 +22,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useDuplicateProject } from '@/features/projects/api/use-duplicate-project';
+import { useDeleteProject } from '@/features/projects/api/use-delete-project';
+import { useConfirm } from '@/hooks/use-confirm';
 
 const ProjectsSection = () => {
   const { data, status, fetchNextPage, hasNextPage, isFetchNextPageError } =
@@ -30,7 +32,22 @@ const ProjectsSection = () => {
   const { mutate: duplicateProject, isPending: isDuplicateProjectPending } =
     useDuplicateProject();
 
+  const { mutate: deleteProject, isPending: isDeleteProjectPending } =
+    useDeleteProject();
+
+  const [ConfirmDialog, confirm] = useConfirm({
+    title: '确认删除',
+    message: '确认删除项目',
+  });
+
   const router = useRouter();
+
+  const onDeleteProject = async (id: string) => {
+    const result = await confirm();
+    if (result) {
+      deleteProject({ id });
+    }
+  };
 
   if (status === 'pending') {
     return (
@@ -75,6 +92,7 @@ const ProjectsSection = () => {
 
   return (
     <div className="space-y-4">
+      <ConfirmDialog />
       <div className="">
         <h3 className="text-2xl font-bold">最近的项目</h3>
         <Table>
@@ -122,8 +140,10 @@ const ProjectsSection = () => {
 
                           <DropdownMenuItem
                             className="h-10 cursor-pointer"
-                            disabled={false}
-                            onClick={() => {}}
+                            disabled={isDeleteProjectPending}
+                            onClick={() => {
+                              onDeleteProject(project.id);
+                            }}
                           >
                             <Trash2 className="size-4 mr-2" />
                             删除

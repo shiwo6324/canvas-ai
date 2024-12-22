@@ -6,6 +6,29 @@ import { db } from '@/db';
 import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 const app = new Hono()
+  .delete(
+    '/:id',
+    verifyAuth(),
+    zValidator('param', z.object({ id: z.string() })),
+    async (c) => {
+      const { id } = c.req.valid('param');
+      const auth = c.get('authUser');
+      if (!auth.token?.id) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const data = await db
+        .delete(projects)
+        .where(
+          and(eq(projects.userId, auth.token.id as string), eq(projects.id, id))
+        )
+        .returning();
+      if (data.length === 0) {
+        return c.json({ error: '项目不存在' }, 404);
+      }
+      return c.json({ data: { id } });
+    }
+  )
   .post(
     '/:id/duplicate',
     verifyAuth(),
