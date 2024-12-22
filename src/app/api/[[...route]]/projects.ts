@@ -6,6 +6,45 @@ import { db } from '@/db';
 import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 const app = new Hono()
+  .post(
+    '/:id/duplicate',
+    verifyAuth(),
+    zValidator('param', z.object({ id: z.string() })),
+    async (c) => {
+      const { id } = c.req.valid('param');
+      const auth = c.get('authUser');
+      if (!auth.token?.id) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const data = await db
+        .select()
+        .from(projects)
+        .where(
+          and(eq(projects.id, id), eq(projects.userId, auth.token.id as string))
+        );
+      if (data.length === 0) {
+        return c.json({ error: '项目不存在' }, 404);
+      }
+      const project = data[0];
+      const newProject = await db
+        .insert(projects)
+        .values({
+          name: project.name + '-副本',
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          json: project.json,
+          userId: auth.token.id as string,
+          width: project.width,
+          height: project.height,
+        })
+        .returning();
+      if (!newProject[0]) {
+        return c.json({ error: '复制项目失败' }, 400);
+      }
+      return c.json({ data: newProject[0] });
+    }
+  )
   .get(
     '/',
     verifyAuth(),

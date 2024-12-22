@@ -21,10 +21,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useDuplicateProject } from '@/features/projects/api/use-duplicate-project';
 
 const ProjectsSection = () => {
   const { data, status, fetchNextPage, hasNextPage, isFetchNextPageError } =
     useGetProjects();
+
+  const { mutate: duplicateProject, isPending: isDuplicateProjectPending } =
+    useDuplicateProject();
+
   const router = useRouter();
 
   if (status === 'pending') {
@@ -106,8 +111,10 @@ const ProjectsSection = () => {
                         <DropdownMenuContent align="end" className="w-60">
                           <DropdownMenuItem
                             className="h-10 cursor-pointer"
-                            disabled={false}
-                            onClick={() => {}}
+                            disabled={isDuplicateProjectPending}
+                            onClick={() => {
+                              duplicateProject({ id: project.id });
+                            }}
                           >
                             <CopyIcon className="size-4 mr-2" />
                             复制
