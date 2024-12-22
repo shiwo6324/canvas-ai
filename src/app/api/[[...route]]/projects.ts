@@ -3,9 +3,28 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { projects, projectsSchema } from '@/db/schema';
 import { db } from '@/db';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 const app = new Hono()
+  .get(
+    '/templates',
+    verifyAuth(),
+    zValidator(
+      'query',
+      z.object({ page: z.coerce.number(), limit: z.coerce.number() })
+    ),
+    async (c) => {
+      const { page, limit } = c.req.valid('query');
+      const data = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.isTemplate, true))
+        .limit(limit)
+        .offset((page - 1) * limit)
+        .orderBy(asc(projects.isPremium), desc(projects.updatedAt));
+      return c.json({ data });
+    }
+  )
   .delete(
     '/:id',
     verifyAuth(),
