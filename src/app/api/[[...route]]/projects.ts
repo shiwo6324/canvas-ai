@@ -3,9 +3,40 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { projects, projectsSchema } from '@/db/schema';
 import { db } from '@/db';
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 const app = new Hono()
+  .get(
+    '/',
+    verifyAuth(),
+    zValidator(
+      'query',
+      z.object({ page: z.coerce.number(), limit: z.coerce.number() })
+    ),
+    async (c) => {
+      const auth = c.get('authUser');
+      const { page, limit } = c.req.valid('query');
+
+      if (!auth.token?.id) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      // 查询数据库获取项目列表
+      const data = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.userId, auth.token.id as string)) //
+        .limit(limit) // 限制返回数量
+        .offset((page - 1) * limit) // 计算偏移量实现分页
+        .orderBy(desc(projects.updatedAt)); // 按更新时间倒序排序
+
+      // 返回项目列表和下一页信息
+      return c.json({
+        data,
+        nextPage: data.length === limit ? page + 1 : null, // 如果返回数据等于limit说明还有下一页
+      });
+    }
+  )
   .patch(
     '/:id',
     verifyAuth(),
