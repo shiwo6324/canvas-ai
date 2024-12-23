@@ -2,6 +2,11 @@ import { client } from '@/lib/hono';
 import { useQuery } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
 
+export type Template = InferResponseType<
+  typeof client.api.projects.templates.$get,
+  200
+>;
+
 export type TemplatesResponseType = InferRequestType<
   typeof client.api.projects.templates.$get
 >['query'];
