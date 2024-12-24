@@ -64,7 +64,7 @@ const TemplateCard = ({
         </div>
       </div>
       <div className="space-y-1">
-        <p className="text-sm font-medium">{title}</p>
+        <p className="text-sm font-medium text-left">{title}</p>
         <p
           className="text-xs text-muted-foreground opacity-0 
         group-hover:opacity-75 transition"

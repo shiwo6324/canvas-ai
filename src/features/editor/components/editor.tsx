@@ -23,6 +23,7 @@ import SettingsSidebar from './settings-sidebar';
 import { Project } from '@/features/projects/api/use-get-project';
 import { useUpdateProject } from '@/features/projects/api/use-update-project';
 import { useDebounceFn } from 'ahooks';
+import TemplateSidebar from './template-sidebar';
 
 const Editor = ({ initialData }: { initialData: Project['data'] }) => {
   const canvasRef = React.useRef(null);
@@ -169,6 +170,11 @@ const Editor = ({ initialData }: { initialData: Project['data'] }) => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <SettingsSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <TemplateSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

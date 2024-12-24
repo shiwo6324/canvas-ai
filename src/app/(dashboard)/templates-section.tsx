@@ -58,11 +58,13 @@ const TemplatesSection = () => {
       },
       {
         onSuccess: ({ data }) => {
-          router.push(`/editor/${data.id}`);
+          router.push(`/editor/${data[0].id}`);
         },
       }
     );
   };
+  console.log({ data });
+
   return (
     <div>
       <h3 className="font-semibold text-lg">从模板开始</h3>
